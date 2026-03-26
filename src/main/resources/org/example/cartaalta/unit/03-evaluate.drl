@@ -1,0 +1,43 @@
+package org.example.cartaalta.unit;
+
+unit CartaAltaUnit;
+
+rule "I giocatori con punteggio più basso vengono eliminati"
+salience 10
+when
+    /turn[phase == Phase.EVALUATE, $maxScore: highestScore]
+    $loser : /players[card.score < $maxScore, $card: card]
+
+then
+    players.remove($loser);
+    events.add("[REMOVE] - Player: " + $loser.getName() + ", Card: " + $card);
+end
+
+rule "Unico vincitore"
+when
+    $t: /turn[phase == Phase.EVALUATE, $maxScore: highestScore]
+
+    accumulate(/players[card.score == $maxScore];
+                $count : count();
+                $count == 1)
+
+    $p: /players[card.score == $maxScore, $c: card]
+then
+    modify($t){
+        setPhase(Phase.END)
+    }
+    events.add("[WINNER] - Player: " + $p.getName() + ", Card: " + $c);
+end
+
+rule "Rivincita"
+when
+    $t: /turn[phase == Phase.EVALUATE, $maxScore: highestScore]
+    accumulate( /players[card.score == $maxScore];
+                $count : count();
+                $count > 1)
+then
+    modify($t){
+        setPhase(Phase.REMATCH)
+    }
+    events.add("[REMATCH] - Count of players with max score: " + $count);
+end

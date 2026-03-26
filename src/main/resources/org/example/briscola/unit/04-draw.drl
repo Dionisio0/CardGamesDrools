@@ -1,0 +1,59 @@
+package org.example.briscola.unit;
+
+unit BriscolaUnit;
+
+rule "assegna una carta ad ogni giocatore"
+when
+    $t: /turn[phase == Phase.DRAW, emptyDeck == false, $ap: activePlayer]
+    $p: /players[name == $ap, hand.size == 2]
+then
+    BriscolaCard card = deck.draw();
+
+    modify($p){
+        addCardToHand(card)
+    }
+
+    modify($t){
+        setActivePlayer(dealer.getNextPlayer($ap)),
+        setEmptyDeck(deck.isEmpty())
+    }
+
+    events.add("[DEAL] - " + $p.getName() + " draws a card - " + card);
+end
+
+rule "ultimo turno di pesca"
+when
+    $t: /turn[phase == Phase.DRAW, emptyDeck == true, $ap: activePlayer, $b: briscola]
+    accumulate(/players[hand.size == 3];
+                    $count: count();
+                    $count == 3)
+    $p: /players[name == $ap, hand.size == 2]
+then
+    modify($p){
+        addCardToHand($b)
+    }
+
+    events.add("[DEAL] - " + $p.getName() + " draws the briscola card - " + $b);
+end
+
+rule "tutti i giocatori hanno almeno 1 carta in mano"
+when
+    $t: /turn[phase == Phase.DRAW]
+    forall (/players[hand.size > 0 && <= 3])
+then
+    modify($t){
+        setPhase(Phase.EVALUATE)
+    }
+    events.add("[DEAL] - All player drawn a card, checking if all players have 3 cards after reset");
+end
+
+rule "i giocatori non hanno più carte in mano"
+when
+    $t: /turn[phase == Phase.DRAW, emptyDeck == true]
+    forall (/players[hand.size == 0])
+then
+    modify($t){
+        setPhase(Phase.END)
+    }
+    events.add("[GAME OVER] - No valid cards left for any player");
+end

@@ -1,0 +1,51 @@
+package org.example.blackjack.unit;
+
+unit BlackjackUnit;
+
+rule "Il giocatore vince"
+when
+    $t: /turn[phase == Phase.COMPARISON]
+    $p: /player[$hv: handValue]
+    $d: /dealer[handValue < $hv]
+then
+    modify($t){
+        setResult(Result.WIN),
+        setPhase(Phase.PAYOUT)
+    }
+end
+
+rule "Il giocatore perde"
+when
+    $t: /turn[phase == Phase.COMPARISON]
+    $p: /player[$phv: handValue]
+    $d: /dealer[handValue > $phv]
+then
+    modify($t){
+        setResult(Result.LOSE),
+        setPhase(Phase.PAYOUT)
+    }
+end
+
+rule "pareggio a 21 ma il banco ha blackjack"
+when
+    $t: /turn[phase == Phase.COMPARISON]
+    $p: /player[handValue == 21, hand.size > 2]
+    $d: /dealer[handValue == 21, hand.size == 2]
+then
+    modify($t){
+        setResult(Result.LOSE),
+        setPhase(Phase.PAYOUT)
+    }
+end
+
+rule "pareggio"
+when
+    $t: /turn[phase == Phase.COMPARISON]
+    $p: /player[$phv: handValue]
+    $d: /dealer[handValue == $phv]
+then
+    modify($t){
+        setResult(Result.TIE),
+        setPhase(Phase.PAYOUT)
+    }
+end

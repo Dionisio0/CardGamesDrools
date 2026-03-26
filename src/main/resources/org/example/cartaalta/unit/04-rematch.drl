@@ -1,0 +1,26 @@
+package org.example.cartaalta.unit;
+
+unit CartaAltaUnit;
+
+rule "Rimuovi le carte giocate"
+when
+    /turn[phase == Phase.REMATCH]
+    $player : /players[card != null]
+then
+    modify($player){
+        setCard(null)
+    }
+    events.add("[RESET] - Player: " + $player.getName() + " card reset for rematch");
+end
+
+rule "Tutti i giocatori hanno le mani vuote"
+when
+    $t: /turn[phase == Phase.REMATCH]
+    forall (/players[card == null])
+then
+    modify($t){
+        setHighestScore(0),
+        setPhase(Phase.DRAW)
+    }
+    events.add("[PASS] - CurrentPhase: REMATCH, NextPhase: DRAW, Reason: All players have reset their hands");
+end

@@ -1,0 +1,41 @@
+package org.example.cartaalta.unit;
+
+unit CartaAltaUnit;
+
+import org.example.cartaalta.model.*;
+
+rule "Non ci sono abbastanza carte per continuare"
+when
+    $t: /turn[phase == Phase.DRAW]
+    accumulate( /players[card == null];
+                $count : count();
+                $count > deck.size)
+then
+    modify($t){
+        setPhase(Phase.END)
+    }
+    events.add("[END] - Not enough cards to continue");
+end
+
+rule "Ogni giocatore riceve una carta"
+when
+    /turn[phase == Phase.DRAW]
+    $player : /players[card == null]
+then
+    CartaAltaCard card = deck.draw();
+    modify($player){
+        setCard(card)
+    }
+    events.add("[DRAW] - Player: " + $player.getName() + ", Card: " + card);
+end
+
+rule "Tutti i giocatori hanno una carta"
+when
+    $t: /turn[phase == Phase.DRAW]
+    forall (/players[card != null])
+then
+    modify($t){
+        setPhase(Phase.FIND_MAX_SCORE)
+    }
+    events.add("[PASS] - CurrentPhase: DRAW, NextPhase: FIND_MAX_SCORE, Reason: All players have drawn a card");
+end

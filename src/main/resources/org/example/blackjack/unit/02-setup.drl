@@ -1,0 +1,75 @@
+package org.example.blackjack.unit;
+
+unit BlackjackUnit;
+
+import org.example.blackjack.model.*
+import java.util.List;
+
+// MANCA la regola per verificare che il mazzo
+// abbia abbastanza carte (circa 10) per continuare
+// altrimenti si crea un nuovo mazzo e si mescola
+rule "assegna due carte al giocatore e due carte al dealer in modo alternato"
+when
+    $t: /turn[phase == Phase.SETUP]
+    $p: /player[hand.size == 0]
+    $d: /dealer[hand.size == 0]
+then
+    List<BlackjackCard> cards = deck.draw(4);
+    modify($p){
+        addCard(cards.get(0)),
+        addCard(cards.get(2))
+    }
+    modify($d){
+        addCard(cards.get(1)),
+        addCard(cards.get(3))
+    }
+end
+
+/* Non possiamo mettere la stampa nella regola sopra perchè il valore della mano non è aggiornato,
+qual'ora il player avesse due assi verrebbe contato come 22*/
+rule "stampa la mano iniziale del giocatore e la prima carta del dealer"
+when
+    $t: /turn[phase == Phase.SETUP]
+    $p: /player[hand.size == 2, $h: hand, $hv: handValue]
+    $d: /dealer[hand.size == 2, $fc: hand[0]]
+then
+    events.add("Player's initial hand: " + $h + " - value: " + $hv);
+    events.add("Dealer's first card: " + $fc + " - value: " + $fc.getValue());
+end
+
+rule "Se il giocatore fa blackjack e il dealer no, vince automaticamente"
+when
+    $t: /turn[phase == Phase.SETUP]
+    $p: /player[handValue == 21]
+    $d: /dealer[handValue != 21, $dh: hand, $dhv: handValue]
+then
+    modify($t){
+        setResult(Result.WIN),
+        setPhase(Phase.PAYOUT)
+    }
+    events.add("Dealer's second card revealed: " + $dh + " - value: " + $dhv);
+end
+
+rule "se il giocatore fa blackjack e il dealer anche, è un pareggio"
+when
+    $t: /turn[phase == Phase.SETUP]
+    /player[handValue == 21]
+    /dealer[handValue == 21, $dh: hand, $dhv: handValue]
+then
+    modify($t){
+        setResult(Result.TIE),
+        setPhase(Phase.PAYOUT)
+    }
+    events.add("Dealer's second card revealed: " + $dh + " - value: " + $dhv);
+end
+
+rule "SETUP termina e si passa a ACTION"
+when
+    $t: /turn[phase == Phase.SETUP]
+    /player[hand.size == 2, handValue < 21]
+    /dealer[hand.size == 2]
+then
+    modify($t){
+        setPhase(Phase.ACTION)
+    }
+end

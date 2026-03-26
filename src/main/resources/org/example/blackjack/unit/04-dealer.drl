@@ -1,0 +1,52 @@
+package org.example.blackjack.unit;
+
+unit BlackjackUnit;
+
+rule "il dealer rivela la seconda carta"
+when
+    $t: /turn[phase == Phase.DEALER]
+    $d: /dealer[hand.size == 2, $h: hand, $hv: handValue]
+then
+    events.add("Dealer's second card revealed: " + $h + " - value: " + $hv);
+end
+
+rule "il dealer pesca se ha meno di 17"
+when
+    $t: /turn[phase == Phase.DEALER]
+    $d: /dealer[handValue < 17]
+then
+    modify($d){
+        addCard(deck.draw())
+    }
+end
+
+rule "mostra carte dealer dopo aver pescato"
+when
+    $t: /turn[phase == Phase.DEALER]
+    $d: /dealer[hand.size > 2, $h: hand, $hv: handValue]
+then
+    events.add("Dealer's new hand: " + $h + " - value: " + $hv);
+end
+
+rule "se il dealer supera 21, il giocatore vince automaticamente"
+when
+    $t: /turn[phase == Phase.DEALER]
+    $d: /dealer[handValue > 21, $hv: handValue]
+then
+    modify($t){
+        setResult(Result.WIN),
+        setPhase(Phase.PAYOUT)
+    }
+    events.add("Dealer busts with hand value: " + $hv );
+end
+
+rule "se il dealer ha 17 o più e meno di 21, si passa alla fase di confronto"
+when
+    $t: /turn[phase == Phase.DEALER]
+    $d: /dealer[handValue >= 17 && <= 21, $dv: handValue]
+then
+    modify($t){
+        setPhase(Phase.COMPARISON)
+    }
+    events.add("Dealer stands with hand value: " + $dv);
+end

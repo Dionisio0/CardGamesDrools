@@ -1,0 +1,11 @@
+package org.example.briscola.unit;
+
+unit BriscolaUnit;
+
+rule "fine"
+when
+    /turn[phase == Phase.END]
+    $p: /players
+then
+    events.add("[RESULT] " + $p.getName() + " final score: " + $p.getScore());
+end

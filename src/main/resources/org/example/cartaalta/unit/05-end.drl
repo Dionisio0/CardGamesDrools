@@ -1,0 +1,10 @@
+package org.example.cartaalta.unit;
+
+unit CartaAltaUnit;
+
+rule "end turn"
+when
+    $t: /turn[phase == Phase.END]
+then
+    events.add("[END] - Game ended");
+end

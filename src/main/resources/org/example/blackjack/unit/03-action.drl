@@ -1,0 +1,60 @@
+package org.example.blackjack.unit;
+
+unit BlackjackUnit;
+
+rule "Il giocatore sceglie HIT"
+when
+    /turn[phase == Phase.ACTION]
+    $a: /playerActions[action == Action.HIT]
+    $p: /player
+then
+    playerActions.remove($a);
+    modify($p){
+        addCard(deck.draw())
+    }
+end
+
+/* Non possiamo mettere la stampa nella regola sopra perchè il valore della mano non è aggiornato,
+qual'ora il player avesse degli assi in mano verrebbero sempre contati come 11*/
+rule "Si stampa la nuova mano del giocatore dopo aver scelto HIT"
+when
+    /turn[phase == Phase.ACTION]
+    $p: /player[hand.size > 2, $h: hand, $hv: handValue]
+then
+    events.add("Player has a new card: " + $h + " (value: " + $hv + ")");
+end
+
+rule "Se il giocatore ha 21 dopo aver scelto HIT"
+when
+    $t: /turn[phase == Phase.ACTION]
+    $p: /player[hand.size > 2, handValue == 21]
+then
+    modify($t){
+        setPhase(Phase.DEALER)
+    }
+end
+
+rule "Se il giocatore supera 21 dopo aver scelto HIT"
+when
+    $t: /turn[phase == Phase.ACTION]
+    $p: /player[hand.size > 2, handValue > 21, $hv: handValue]
+    /dealer[$dh: hand, $dhv: handValue]
+then
+    modify($t){
+        setResult(Result.LOSE),
+        setPhase(Phase.PAYOUT)
+    }
+    events.add("Player busts with hand value: " + $hv + " and loses.");
+    events.add("Dealer's second card revealed: " + $dh + " - value: " + $dhv);
+end
+
+rule "il giocatore sceglie STAND"
+when
+    $t: /turn[phase == Phase.ACTION]
+    $a: /playerActions[action == Action.STAND]
+then
+    playerActions.remove($a);
+    modify($t){
+        setPhase(Phase.DEALER)
+    }
+end

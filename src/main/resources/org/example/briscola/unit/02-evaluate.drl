@@ -1,0 +1,101 @@
+package org.example.briscola.unit;
+
+unit BriscolaUnit;
+
+
+
+/*NOTA: questa regola non gestisce logica di gioco, dovrebbe stare probabilmente lato UI*/
+rule "stampa la mano dei giocatori"
+when
+    /turn[phase == Phase.EVALUATE]
+    $p: /players
+then
+    events.add("[HAND] - " + $p.getName() + " Hand: " + $p.getHand());
+end
+
+/*NOTA: questa regola non gestisce logica di gioco, dovrebbe stare probabilmente lato UI*/
+rule "stampa il giocatore di turno"
+when
+    /turn[phase == Phase.EVALUATE, $tp: turnPlayer]
+then
+     events.add("[TURN] - " + $tp + "'s turn");
+end
+
+rule "rimuovi la carta giocata dalla mano del giocatore"
+when
+    /turn[phase == Phase.EVALUATE]
+    /table[$playerName: name, $cardPlayed: card]
+    $p: /players[name == $playerName, $h: hand contains $cardPlayed]
+then
+    $h.remove($cardPlayed);
+    modify($p){
+        setHand($h)
+    }
+    events.add("[PLAY] - " + $playerName + " plays " + $cardPlayed);
+end
+
+rule "briscola batte non-briscola"
+when
+    /turn[phase == Phase.EVALUATE, $b: briscola.suit]
+    /table[card.suit == $b, $n1: name]
+    /table[card.suit != $b, $n2: name]
+    $defeated: /players[name == $n2]
+then
+    players.remove($defeated);
+    defeats.add($defeated);
+    events.add("[REMOVE] - " + $n2 + " is defeated by " + $n1);
+end
+
+rule "stesso seme, valore maggiore batte valore minore"
+when
+    /turn[phase == Phase.EVALUATE]
+    /table[$cs: card.suit, $cp: card.power, $n1: name]
+    /table[card.suit == $cs, card.power < $cp, $n2: name]
+    $defeated: /players[name == $n2]
+then
+    players.remove($defeated);
+    defeats.add($defeated);
+    events.add("[REMOVE] - " + $n2 + " is defeated by " + $n1);
+end
+
+rule "seme di mano batte seme estraneo"
+when
+    /turn[phase == Phase.EVALUATE, $b: briscola.suit, $tp: turnPlayer]
+    /table[name == $tp, card.suit != $b, $ls: card.suit]
+    /*questa si potrebbe rimuovere ma non si potrebbe poi stampare chi ha vinto*/
+    /table[card.suit == $ls, $n1: name]
+    /table[card.suit != $b, card.suit != $ls, $n2: name]
+    $defeated: /players[name == $n2]
+then
+    players.remove($defeated);
+    defeats.add($defeated);
+    events.add("[REMOVE] - " + $n2 + " is defeated by " + $n1);
+end
+
+rule "assegna i punti al vincitore e passa alla fase di reset"
+when
+    $t: /turn[phase == Phase.EVALUATE]
+
+    accumulate( /players;
+                $count: count();
+                $count == 1)
+
+    accumulate( /table[$cp: card.points];
+                    $totalPoints: sum($cp))
+
+    $winner: /players[$wname: name, $wscore: score]
+
+then
+    modify($winner){
+        setScore($wscore + $totalPoints)
+    }
+
+    modify($t){
+        setTurnPlayer($wname),
+        setActivePlayer($wname),
+        setPhase(Phase.RESET)
+    }
+
+    events.add("[WIN] - " + $wname + " wins with " + $totalPoints + " points" + " (Total Score: " + ($wscore + $totalPoints) + ")");
+    events.add("[NEXT TURN] - Next turn starts with " + $wname);
+end

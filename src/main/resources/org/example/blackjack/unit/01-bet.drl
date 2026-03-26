@@ -1,0 +1,31 @@
+package org.example.blackjack.unit;
+
+unit BlackjackUnit;
+
+rule "Scommessa valida"
+when
+    $t: /turn[phase == Phase.BET]
+    $a: /playerActions#PlayerActionBet[betAmount > 0, $bet: betAmount]
+    $p: /player[balance >= $bet, $bal: balance]
+then
+    playerActions.remove($a);
+
+    modify($p){
+        setBet($bet),
+        setBalance($bal - $bet)
+    }
+
+    modify($t){
+        setPhase(Phase.SETUP)
+    }
+end
+
+rule "Scommessa non valida"
+when
+    $t: /turn[phase == Phase.BET]
+    $a: /playerActions#PlayerActionBet[$bet: betAmount]
+    $p: /player[balance < $bet || $bet <= 0]
+then
+    playerActions.remove($a);
+    events.add("[INVALID BET]");
+end
