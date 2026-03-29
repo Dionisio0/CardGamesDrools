@@ -1,6 +1,6 @@
 package org.example.briscola.model;
 
-public class CardPlayed {
+public final class CardPlayed {
     private final String name;
     private BriscolaCard card;
 

@@ -10,17 +10,7 @@ when
     $p: /player
     $d: /dealer
 then
-    modify($p){
-        setHand(new ArrayList<>()),
-        setBet(0)
-    }
-
-    modify($d){
-        setHand(new ArrayList<>())
-    }
-
-    modify($t){
-        setResult(Result.NONE),
-        setPhase(Phase.BET)
-    }
+    modify($p){ setHand(new ArrayList<>()), setBet(0) }
+    modify($d){ setHand(new ArrayList<>()) }
+    modify($t){ setResult(Result.NONE), setPhase(Phase.BET) }
 end

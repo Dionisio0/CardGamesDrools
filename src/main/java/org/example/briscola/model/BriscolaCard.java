@@ -24,6 +24,6 @@ public final class BriscolaCard extends Card {
 
     @Override
     public String toString() {
-        return getRank() + " of " + getSuit() + " (Points: " + points + ", Power: " + power + ")";
+        return getRank() + " of " + getSuit() + " (points: " + points + ", power: " + power + ")";
     }
 }

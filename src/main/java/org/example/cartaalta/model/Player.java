@@ -1,6 +1,6 @@
 package org.example.cartaalta.model;
 
-public class Player {
+public final class Player {
     private final String name;
     private CartaAltaCard card;
 

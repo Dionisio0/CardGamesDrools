@@ -8,11 +8,7 @@ import java.util.List;
 public abstract class Deck<T extends Card>{
     private final List<T> cards = new ArrayList<>();
 
-    public Deck(){
-        initializeDeck();
-    }
-
-    private void initializeDeck(){
+    protected void initializeDeck(){
         for(Suit suit : Suit.values()){
             for(Rank rank : getValidRanks()){
                 cards.add(createCard(suit,rank));
@@ -38,14 +34,14 @@ public abstract class Deck<T extends Card>{
             return Collections.emptyList();
         }
 
-        int cardsToDraw = Math.min(n, cards.size());
-        int startIndex = cards.size() - cardsToDraw;
-        List<T> newCards = new ArrayList<>(cards.subList(startIndex,cards.size()));
-        cards.subList(startIndex,cards.size()).clear();
+        int cardsToDraw = Math.min(n,cards.size());
+        List<T> drawn = new ArrayList<>(cardsToDraw);
 
-        Collections.reverse(newCards);
+        for(int i = 0; i < cardsToDraw; i++){
+            drawn.add(cards.remove(cards.size() - 1));
+        }
 
-        return newCards;
+        return drawn;
     }
 
     public final void shuffle(){
@@ -58,5 +54,11 @@ public abstract class Deck<T extends Card>{
 
     public final boolean isEmpty() {
         return cards.isEmpty();
+    }
+
+    public final void reset(){
+        cards.clear();
+        initializeDeck();
+        shuffle();
     }
 }

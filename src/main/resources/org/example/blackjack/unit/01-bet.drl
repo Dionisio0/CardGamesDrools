@@ -10,14 +10,8 @@ when
 then
     playerActions.remove($a);
 
-    modify($p){
-        setBet($bet),
-        setBalance($bal - $bet)
-    }
-
-    modify($t){
-        setPhase(Phase.SETUP)
-    }
+    modify($p){ setBet($bet), setBalance($bal - $bet) }
+    modify($t){ setPhase(Phase.SETUP) }
 end
 
 rule "Scommessa non valida"

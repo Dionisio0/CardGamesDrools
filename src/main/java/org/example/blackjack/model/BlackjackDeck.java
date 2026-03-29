@@ -6,6 +6,10 @@ import org.example.core.Suit;
 
 public final class BlackjackDeck extends Deck<BlackjackCard> {
 
+    public BlackjackDeck() {
+        initializeDeck();
+    }
+
     @Override
     protected BlackjackCard createCard(Suit suit, Rank rank) {
         int value = getValue(rank);

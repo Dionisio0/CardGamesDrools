@@ -4,11 +4,10 @@ import org.drools.ruleunits.api.*;
 import org.example.cartaalta.model.CartaAltaDeck;
 import org.example.cartaalta.model.Player;
 import org.example.cartaalta.model.Turn;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartaAltaUnit implements RuleUnitData {
+public final class CartaAltaUnit implements RuleUnitData {
     private final SingletonStore<Turn> turn;
     private final DataStore<Player> players;
     private final CartaAltaDeck deck;

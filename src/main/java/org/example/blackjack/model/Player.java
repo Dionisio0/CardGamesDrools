@@ -5,10 +5,9 @@ import org.example.core.Rank;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public final class Player {
     private final String name;
     private List<BlackjackCard> hand;
-
     private double balance;
     private double bet;
 
@@ -34,9 +33,8 @@ public class Player {
             }
         }
 
-        // Adjust for Aces if total value exceeds 21
         while (value > 21 && aceCount > 0) {
-            value -= 10; // Treat Ace as 1 instead of 11
+            value -= 10;
             aceCount--;
         }
 
@@ -53,14 +51,6 @@ public class Player {
 
     public void addCard(BlackjackCard card) {
         hand.add(card);
-    }
-
-    public void placeBet(int amount) {
-        if (amount > balance) {
-            throw new IllegalArgumentException("Bet exceeds available balance");
-        }
-        this.bet = amount;
-        this.balance -= amount;
     }
 
     public String getName() {

@@ -2,8 +2,8 @@ package org.example.blackjack;
 
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
-import org.example.blackjack.model.*;
 import org.example.blackjack.unit.BlackjackUnit;
+import org.example.blackjack.model.*;
 
 import java.util.Scanner;
 

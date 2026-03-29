@@ -1,6 +1,6 @@
 package org.example.core;
 
-public abstract class Card {
+public class Card {
     private final Suit suit;
     private final Rank rank;
 
@@ -15,10 +15,5 @@ public abstract class Card {
 
     public Rank getRank() {
         return rank;
-    }
-
-    @Override
-    public String toString() {
-        return rank + " of " + suit;
     }
 }

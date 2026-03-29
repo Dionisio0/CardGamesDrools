@@ -8,6 +8,7 @@ when
     $cardPlayed: /table
 then
     table.remove($cardPlayed);
+
     events.add("[RESET] - Card: " + $cardPlayed.getCard() + " removed from table");
 end
 
@@ -18,6 +19,7 @@ when
 then
     defeats.remove($defeated);
     players.add($defeated);
+
     events.add("[RESET] - " + $defeated.getName() + " re-enters the game");
 end
 
@@ -27,8 +29,7 @@ when
     not /table
     not /defeats
 then
-    modify($t){
-        setPhase(Phase.DRAW)
-    }
+    modify($t){ setPhase(Phase.DRAW) }
+
     events.add("[RESET] - All players are back, starting new round");
 end

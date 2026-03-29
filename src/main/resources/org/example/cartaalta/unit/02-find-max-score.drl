@@ -5,13 +5,8 @@ unit CartaAltaUnit;
 rule "Trova carta con il punteggio più alto"
 when
     $t: /turn[phase == Phase.FIND_MAX_SCORE]
-
-    accumulate( /players[$s: card.score],
-    $maxCard : max($s) )
+    accumulate( /players[$s: card.score], $maxCard : max($s))
 then
-    modify($t){
-        setHighestScore($maxCard),
-        setPhase(Phase.EVALUATE)
-    }
+    modify($t){ setHighestScore($maxCard), setPhase(Phase.EVALUATE) }
     events.add("[MAX SCORE] - Max Score: " + $maxCard);
 end

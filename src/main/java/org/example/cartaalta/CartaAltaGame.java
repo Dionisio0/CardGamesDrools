@@ -31,12 +31,10 @@ public class CartaAltaGame {
     }
 
     public void start(){
-        RuleUnitInstance<CartaAltaUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(unit);
-
-        instance.fire();
-        unit.getEvents().forEach(System.out::println);
-
-        instance.close();
+        try(RuleUnitInstance<CartaAltaUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(unit)){
+            instance.fire();
+            unit.getEvents().forEach(System.out::println);
+            instance.close();
+        }
     }
-
 }

@@ -13,10 +13,8 @@ public class BriscolaUnit implements RuleUnitData {
     private final DataStore<CardPlayed> table;
     private final DataStore<Player> defeats;
     private final SingletonStore<Turn> turn;
-
     private final BriscolaDeck deck;
     private final Dealer dealer;
-
     private final List<String> events;
 
     public BriscolaUnit(Dealer dealer){

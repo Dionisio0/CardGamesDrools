@@ -1,11 +1,6 @@
 package org.example.briscola;
 
-import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.api.RuleUnitProvider;
-import org.example.briscola.unit.BriscolaUnit;
 import org.example.briscola.model.*;
-
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {

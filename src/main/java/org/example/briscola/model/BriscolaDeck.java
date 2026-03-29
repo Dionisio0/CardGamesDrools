@@ -7,6 +7,11 @@ import org.example.core.Suit;
 import java.util.List;
 
 public final class BriscolaDeck extends Deck<BriscolaCard> {
+
+    public BriscolaDeck() {
+        initializeDeck();
+    }
+
     @Override
     protected BriscolaCard createCard(Suit suit, Rank rank) {
         int points = getPoints(rank);

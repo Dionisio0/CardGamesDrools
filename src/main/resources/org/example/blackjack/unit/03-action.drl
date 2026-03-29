@@ -9,9 +9,7 @@ when
     $p: /player
 then
     playerActions.remove($a);
-    modify($p){
-        addCard(deck.draw())
-    }
+    modify($p){ addCard(deck.draw()) }
 end
 
 /* Non possiamo mettere la stampa nella regola sopra perchè il valore della mano non è aggiornato,
@@ -29,9 +27,7 @@ when
     $t: /turn[phase == Phase.ACTION]
     $p: /player[hand.size > 2, handValue == 21]
 then
-    modify($t){
-        setPhase(Phase.DEALER)
-    }
+    modify($t){ setPhase(Phase.DEALER) }
 end
 
 rule "Se il giocatore supera 21 dopo aver scelto HIT"
@@ -40,10 +36,7 @@ when
     $p: /player[hand.size > 2, handValue > 21, $hv: handValue]
     /dealer[$dh: hand, $dhv: handValue]
 then
-    modify($t){
-        setResult(Result.LOSE),
-        setPhase(Phase.PAYOUT)
-    }
+    modify($t){ setResult(Result.LOSE), setPhase(Phase.PAYOUT) }
     events.add("Player busts with hand value: " + $hv + " and loses.");
     events.add("Dealer's second card revealed: " + $dh + " - value: " + $dhv);
 end
@@ -54,7 +47,5 @@ when
     $a: /playerActions[action == Action.STAND]
 then
     playerActions.remove($a);
-    modify($t){
-        setPhase(Phase.DEALER)
-    }
+    modify($t){ setPhase(Phase.DEALER) }
 end

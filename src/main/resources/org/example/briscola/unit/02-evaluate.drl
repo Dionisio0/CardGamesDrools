@@ -2,8 +2,6 @@ package org.example.briscola.unit;
 
 unit BriscolaUnit;
 
-
-
 /*NOTA: questa regola non gestisce logica di gioco, dovrebbe stare probabilmente lato UI*/
 rule "stampa la mano dei giocatori"
 when
@@ -28,9 +26,7 @@ when
     $p: /players[name == $playerName, $h: hand contains $cardPlayed]
 then
     $h.remove($cardPlayed);
-    modify($p){
-        setHand($h)
-    }
+    modify($p){ setHand($h) }
     events.add("[PLAY] - " + $playerName + " plays " + $cardPlayed);
 end
 
@@ -75,26 +71,13 @@ end
 rule "assegna i punti al vincitore e passa alla fase di reset"
 when
     $t: /turn[phase == Phase.EVALUATE]
-
-    accumulate( /players;
-                $count: count();
-                $count == 1)
-
-    accumulate( /table[$cp: card.points];
-                    $totalPoints: sum($cp))
-
+    accumulate( /players, $count: count(); $count == 1)
+    accumulate( /table[$cp: card.points], $totalPoints: sum($cp))
     $winner: /players[$wname: name, $wscore: score]
 
 then
-    modify($winner){
-        setScore($wscore + $totalPoints)
-    }
-
-    modify($t){
-        setTurnPlayer($wname),
-        setActivePlayer($wname),
-        setPhase(Phase.RESET)
-    }
+    modify($winner){ setScore($wscore + $totalPoints) }
+    modify($t){ setTurnPlayer($wname), setActivePlayer($wname), setPhase(Phase.RESET)}
 
     events.add("[WIN] - " + $wname + " wins with " + $totalPoints + " points" + " (Total Score: " + ($wscore + $totalPoints) + ")");
     events.add("[NEXT TURN] - Next turn starts with " + $wname);

@@ -3,7 +3,7 @@ package org.example.briscola.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public final class Player {
     private final String name;
     private List<BriscolaCard> hand;
     private int score;

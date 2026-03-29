@@ -7,13 +7,10 @@ import org.example.cartaalta.model.*;
 rule "Non ci sono abbastanza carte per continuare"
 when
     $t: /turn[phase == Phase.DRAW]
-    accumulate( /players[card == null];
-                $count : count();
+    accumulate( /players[card == null], $count : count();
                 $count > deck.size)
 then
-    modify($t){
-        setPhase(Phase.END)
-    }
+    modify($t){ setPhase(Phase.END) }
     events.add("[END] - Not enough cards to continue");
 end
 
@@ -23,9 +20,8 @@ when
     $player : /players[card == null]
 then
     CartaAltaCard card = deck.draw();
-    modify($player){
-        setCard(card)
-    }
+    modify($player){ setCard(card) }
+
     events.add("[DRAW] - Player: " + $player.getName() + ", Card: " + card);
 end
 
@@ -34,8 +30,5 @@ when
     $t: /turn[phase == Phase.DRAW]
     forall (/players[card != null])
 then
-    modify($t){
-        setPhase(Phase.FIND_MAX_SCORE)
-    }
-    events.add("[PASS] - CurrentPhase: DRAW, NextPhase: FIND_MAX_SCORE, Reason: All players have drawn a card");
+    modify($t){ setPhase(Phase.FIND_MAX_SCORE) }
 end

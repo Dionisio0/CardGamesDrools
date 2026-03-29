@@ -1,6 +1,6 @@
 package org.example.cartaalta.model;
 
-public class Turn {
+public final class Turn {
     private Phase phase;
     private int highestScore;
 

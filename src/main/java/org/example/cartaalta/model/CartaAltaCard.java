@@ -18,6 +18,6 @@ public final class CartaAltaCard extends Card {
 
     @Override
     public String toString() {
-        return getRank() + " of " + getSuit() + " (Score: " + score + ")";
+        return getRank() + " of " + getSuit() + " (score: " + score + ")";
     }
 }

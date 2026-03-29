@@ -9,12 +9,8 @@ when
     $t: /turn[phase == Phase.SETUP, $ap: activePlayer]
     $p: /players[name == $ap, hand.size == 0]
 then
-    modify($p){
-        setHand(deck.draw(3))
-    }
-    modify($t){
-        setActivePlayer(dealer.getNextPlayer($ap))
-    }
+    modify($p){ setHand(deck.draw(3)) }
+    modify($t){ setActivePlayer(dealer.getNextPlayer($ap))}
 end
 
 rule "rivela la briscola"
@@ -23,9 +19,8 @@ when
     forall(/players[hand.size == 3])
 then
     BriscolaCard briscola = deck.draw();
-    modify($t){
-        setBriscola(briscola)
-    }
+    modify($t){ setBriscola(briscola) }
+
     events.add("[BRISCOLA] : " + briscola);
 end
 
@@ -33,7 +28,5 @@ rule "avanza alla fase di gioco"
 when
     $t: /turn[phase == Phase.SETUP, briscola != null]
 then
-    modify($t){
-        setPhase(Phase.EVALUATE)
-    }
+    modify($t){ setPhase(Phase.EVALUATE) }
 end

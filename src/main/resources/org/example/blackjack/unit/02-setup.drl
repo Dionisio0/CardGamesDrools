@@ -5,9 +5,14 @@ unit BlackjackUnit;
 import org.example.blackjack.model.*
 import java.util.List;
 
-// MANCA la regola per verificare che il mazzo
-// abbia abbastanza carte (circa 10) per continuare
-// altrimenti si crea un nuovo mazzo e si mescola
+rule "verifica se il mazzo ha abbastanza carte, altrimenti crea un nuovo mazzo e mescola"
+when
+    $t: /turn[phase == Phase.SETUP, deck.size < 10]
+then
+    deck.reset();
+    events.add("DECK RESET - new deck created and shuffled");
+end
+
 rule "assegna due carte al giocatore e due carte al dealer in modo alternato"
 when
     $t: /turn[phase == Phase.SETUP]
@@ -15,14 +20,8 @@ when
     $d: /dealer[hand.size == 0]
 then
     List<BlackjackCard> cards = deck.draw(4);
-    modify($p){
-        addCard(cards.get(0)),
-        addCard(cards.get(2))
-    }
-    modify($d){
-        addCard(cards.get(1)),
-        addCard(cards.get(3))
-    }
+    modify($p){ addCard(cards.get(0)), addCard(cards.get(2)) }
+    modify($d){ addCard(cards.get(1)), addCard(cards.get(3)) }
 end
 
 /* Non possiamo mettere la stampa nella regola sopra perchè il valore della mano non è aggiornato,
@@ -43,10 +42,7 @@ when
     $p: /player[handValue == 21]
     $d: /dealer[handValue != 21, $dh: hand, $dhv: handValue]
 then
-    modify($t){
-        setResult(Result.WIN),
-        setPhase(Phase.PAYOUT)
-    }
+    modify($t){ setResult(Result.WIN), setPhase(Phase.PAYOUT)}
     events.add("Dealer's second card revealed: " + $dh + " - value: " + $dhv);
 end
 
@@ -56,10 +52,7 @@ when
     /player[handValue == 21]
     /dealer[handValue == 21, $dh: hand, $dhv: handValue]
 then
-    modify($t){
-        setResult(Result.TIE),
-        setPhase(Phase.PAYOUT)
-    }
+    modify($t){ setResult(Result.TIE), setPhase(Phase.PAYOUT) }
     events.add("Dealer's second card revealed: " + $dh + " - value: " + $dhv);
 end
 
@@ -69,7 +62,5 @@ when
     /player[hand.size == 2, handValue < 21]
     /dealer[hand.size == 2]
 then
-    modify($t){
-        setPhase(Phase.ACTION)
-    }
+    modify($t){ setPhase(Phase.ACTION) }
 end

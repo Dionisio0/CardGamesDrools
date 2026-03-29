@@ -7,9 +7,7 @@ when
     /turn[phase == Phase.REMATCH]
     $player : /players[card != null]
 then
-    modify($player){
-        setCard(null)
-    }
+    modify($player){ setCard(null) }
     events.add("[RESET] - Player: " + $player.getName() + " card reset for rematch");
 end
 
@@ -18,9 +16,5 @@ when
     $t: /turn[phase == Phase.REMATCH]
     forall (/players[card == null])
 then
-    modify($t){
-        setHighestScore(0),
-        setPhase(Phase.DRAW)
-    }
-    events.add("[PASS] - CurrentPhase: REMATCH, NextPhase: DRAW, Reason: All players have reset their hands");
+    modify($t){ setHighestScore(0), setPhase(Phase.DRAW) }
 end

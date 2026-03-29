@@ -15,9 +15,7 @@ when
     $t: /turn[phase == Phase.DEALER]
     $d: /dealer[handValue < 17]
 then
-    modify($d){
-        addCard(deck.draw())
-    }
+    modify($d){ addCard(deck.draw()) }
 end
 
 rule "mostra carte dealer dopo aver pescato"
@@ -33,10 +31,8 @@ when
     $t: /turn[phase == Phase.DEALER]
     $d: /dealer[handValue > 21, $hv: handValue]
 then
-    modify($t){
-        setResult(Result.WIN),
-        setPhase(Phase.PAYOUT)
-    }
+    modify($t){ setResult(Result.WIN), setPhase(Phase.PAYOUT) }
+
     events.add("Dealer busts with hand value: " + $hv );
 end
 
@@ -45,8 +41,6 @@ when
     $t: /turn[phase == Phase.DEALER]
     $d: /dealer[handValue >= 17 && <= 21, $dv: handValue]
 then
-    modify($t){
-        setPhase(Phase.COMPARISON)
-    }
+    modify($t){ setPhase(Phase.COMPARISON) }
     events.add("Dealer stands with hand value: " + $dv);
 end

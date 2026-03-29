@@ -2,7 +2,7 @@ package org.example.briscola.model;
 
 import java.util.List;
 
-public class Dealer {
+public final class Dealer {
     private final List<String> players;
 
     public Dealer(List<String> players) {

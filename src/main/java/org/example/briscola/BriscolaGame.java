@@ -2,8 +2,9 @@ package org.example.briscola;
 
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
-import org.example.briscola.model.*;
 import org.example.briscola.unit.BriscolaUnit;
+import org.example.briscola.model.*;
+
 
 import java.util.List;
 
@@ -31,36 +32,30 @@ public class BriscolaGame {
     }
 
     public void start(){
-        RuleUnitInstance<BriscolaUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(unit);
-
-        // game setup
-        instance.fire();
-
-        unit.getEvents().forEach(System.out::println);
-        unit.getEvents().clear();
-
-        Player p1 = players.get(0);
-        Player p2 = players.get(1);
-        Player p3 = players.get(2);
-        Player p4 = players.get(3);
-
-        // game-loop
-        for(int i = 0; i < 10; i++){
-            System.out.println("\n\n\n--- TURN: || " + (i+1) + " || ---\n\n\n");
-
-            unit.getTable().add(new CardPlayed(p1.getName(), p1.selectCard(0)));
-            unit.getTable().add(new CardPlayed(p2.getName(), p2.selectCard(0)));
-            unit.getTable().add(new CardPlayed(p3.getName(), p3.selectCard(0)));
-            unit.getTable().add(new CardPlayed(p4.getName(), p4.selectCard(0)));
+        try(RuleUnitInstance<BriscolaUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(unit)){
 
             instance.fire();
+            printUnitEvents();
 
-            unit.getEvents().forEach(System.out::println);
-            unit.getEvents().clear();
+            for(int i = 0; i < 10; i++){
+                System.out.println("\n--- TURN: || " + (i+1) + " || ---");
+
+                simulateTurn();
+                instance.fire();
+                printUnitEvents();
+            }
         }
-
-        instance.close();
-
     }
 
+    private void simulateTurn(){
+        unit.getTable().add(new CardPlayed(players.get(0).getName(), players.get(0).selectCard(0)));
+        unit.getTable().add(new CardPlayed(players.get(1).getName(), players.get(1).selectCard(0)));
+        unit.getTable().add(new CardPlayed(players.get(2).getName(), players.get(2).selectCard(0)));
+        unit.getTable().add(new CardPlayed(players.get(3).getName(), players.get(3).selectCard(0)));
+    }
+
+    private void printUnitEvents(){
+        unit.getEvents().forEach(System.out::println);
+        unit.getEvents().clear();
+    }
 }

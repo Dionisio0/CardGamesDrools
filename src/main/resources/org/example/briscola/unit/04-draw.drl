@@ -4,34 +4,23 @@ unit BriscolaUnit;
 
 rule "assegna una carta ad ogni giocatore"
 when
-    $t: /turn[phase == Phase.DRAW, emptyDeck == false, $ap: activePlayer]
+    $t: /turn[phase == Phase.DRAW, $ap: activePlayer, deck.empty == false]
     $p: /players[name == $ap, hand.size == 2]
 then
     BriscolaCard card = deck.draw();
-
-    modify($p){
-        addCardToHand(card)
-    }
-
-    modify($t){
-        setActivePlayer(dealer.getNextPlayer($ap)),
-        setEmptyDeck(deck.isEmpty())
-    }
+    modify($p){ addCardToHand(card) }
+    modify($t){ setActivePlayer(dealer.getNextPlayer($ap))}
 
     events.add("[DEAL] - " + $p.getName() + " draws a card - " + card);
 end
 
 rule "ultimo turno di pesca"
 when
-    $t: /turn[phase == Phase.DRAW, emptyDeck == true, $ap: activePlayer, $b: briscola]
-    accumulate(/players[hand.size == 3];
-                    $count: count();
-                    $count == 3)
+    $t: /turn[phase == Phase.DRAW, $ap: activePlayer, $b: briscola, deck.empty == true]
+    accumulate(/players[hand.size == 3], $count: count();$count == 3)
     $p: /players[name == $ap, hand.size == 2]
 then
-    modify($p){
-        addCardToHand($b)
-    }
+    modify($p){ addCardToHand($b)}
 
     events.add("[DEAL] - " + $p.getName() + " draws the briscola card - " + $b);
 end
@@ -41,19 +30,17 @@ when
     $t: /turn[phase == Phase.DRAW]
     forall (/players[hand.size > 0 && <= 3])
 then
-    modify($t){
-        setPhase(Phase.EVALUATE)
-    }
+    modify($t){ setPhase(Phase.EVALUATE) }
+
     events.add("[DEAL] - All player drawn a card, checking if all players have 3 cards after reset");
 end
 
 rule "i giocatori non hanno più carte in mano"
 when
-    $t: /turn[phase == Phase.DRAW, emptyDeck == true]
+    $t: /turn[phase == Phase.DRAW, deck.empty == true]
     forall (/players[hand.size == 0])
 then
-    modify($t){
-        setPhase(Phase.END)
-    }
+    modify($t){ setPhase(Phase.END) }
+
     events.add("[GAME OVER] - No valid cards left for any player");
 end

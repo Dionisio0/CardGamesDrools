@@ -8,12 +8,9 @@ when
     $p: /player[handValue == 21, hand.size == 2, $b: bet, $bal: balance]
 then
     double totalBalance = $bal + ($b * 2.5);
-    modify($p){
-        setBalance(totalBalance)
-    }
-    modify($t){
-        setPhase(Phase.RESET)
-    }
+    modify($p){ setBalance(totalBalance) }
+    modify($t){ setPhase(Phase.RESET) }
+
     events.add("Player wins with a Blackjack! Payout is 3:2.");
 end
 
@@ -23,12 +20,9 @@ when
     $p: /player[$b: bet, $bal: balance]
 then
     double totalBalance = $bal + ($b * 2);
-    modify($p){
-        setBalance(totalBalance)
-    }
-    modify($t){
-            setPhase(Phase.RESET)
-        }
+    modify($p){ setBalance(totalBalance) }
+    modify($t){ setPhase(Phase.RESET) }
+
     events.add("Player wins ");
 end
 
@@ -37,9 +31,8 @@ when
     $t: /turn[phase == Phase.PAYOUT, result == Result.LOSE]
     $p: /player
 then
-    modify($t){
-        setPhase(Phase.RESET)
-    }
+    modify($t){ setPhase(Phase.RESET) }
+
     events.add("Player loses.");
 end
 
@@ -49,13 +42,8 @@ when
     $p: /player[$b: bet, $bal: balance]
 then
     double totalBalance = $b + $bal;
+    modify($p){ setBalance(totalBalance) }
+    modify($t){ setPhase(Phase.RESET) }
 
-    modify($p){
-        setBalance(totalBalance)
-    }
-
-    modify($t){
-        setPhase(Phase.RESET)
-    }
     events.add("It's a tie! Player's bet is returned.");
 end

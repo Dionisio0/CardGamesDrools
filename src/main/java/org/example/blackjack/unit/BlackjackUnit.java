@@ -14,11 +14,8 @@ public class BlackjackUnit implements RuleUnitData {
     private final SingletonStore<Player> player;
     private final SingletonStore<Turn> turn;
     private final DataStore<PlayerAction> playerActions;
-
     private final BlackjackDeck deck;
-
     private final List<String> events;
-
 
     public BlackjackUnit() {
         this.dealer = DataSource.createSingleton();

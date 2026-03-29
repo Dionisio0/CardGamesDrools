@@ -1,18 +1,16 @@
 package org.example.briscola.model;
 
 
-public class Turn {
+public final class Turn {
     private Phase phase;
     private String turnPlayer;
     private BriscolaCard briscola;
     private String activePlayer;
-    private boolean emptyDeck;
 
     public Turn(Phase phase, String turnPlayer, String activePlayer) {
         this.phase = phase;
         this.turnPlayer = turnPlayer;
         this.activePlayer = activePlayer;
-        this.emptyDeck = false;
     }
 
     public Phase getPhase(){
@@ -45,14 +43,6 @@ public class Turn {
 
     public void setActivePlayer(String activePlayer) {
         this.activePlayer = activePlayer;
-    }
-
-    public boolean isEmptyDeck() {
-        return emptyDeck;
-    }
-
-    public void setEmptyDeck(boolean emptyDeck) {
-        this.emptyDeck = emptyDeck;
     }
 }
 
