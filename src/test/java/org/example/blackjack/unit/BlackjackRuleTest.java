@@ -283,7 +283,7 @@ public class BlackjackRuleTest {
         unit.getDealer().set(dealer);
         unit.getTurn().set(turn);
 
-        instance.fire(new RuleNameEqualsAgendaFilter("se il giocatore fa blackjack e il dealer anche, \u00e8 un pareggio"));
+        instance.fire(new RuleNameEqualsAgendaFilter("se il giocatore fa blackjack e il dealer anche, è un pareggio"));
 
         assertThat(turn.getResult()).isEqualTo(Result.TIE);
         assertThat(turn.getPhase()).isEqualTo(Phase.PAYOUT);
@@ -402,7 +402,7 @@ public class BlackjackRuleTest {
         unit.getDealer().set(dealer);
         unit.getTurn().set(turn);
 
-        instance.fire(new RuleNameEqualsAgendaFilter("se il dealer ha 17 o pi\u00f9 e meno di 21, si passa alla fase di confronto"));
+        instance.fire(new RuleNameEqualsAgendaFilter("se il dealer ha 17 o più e meno di 21, si passa alla fase di confronto"));
 
         assertThat(turn.getPhase()).isEqualTo(Phase.COMPARISON);
     }

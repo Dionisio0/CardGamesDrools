@@ -101,8 +101,6 @@ public class CartaAltaRuleTest {
 
         instance.fire(new RuleNameEqualsAgendaFilter("I giocatori con punteggio più basso vengono eliminati"));
 
-        // P2 (score 5) should have been removed; only P1 remains
-        // We verify via events since DataStore doesn't expose iteration easily
         assertThat(unit.getEvents()).anyMatch(e -> e.contains("P2"));
     }
 

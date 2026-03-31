@@ -82,8 +82,8 @@ public class BriscolaRuleTest {
 
         Player p1 = new Player("P1");
         Player p2 = new Player("P2");
-        p1.setHand(new java.util.ArrayList<>(List.of(briscolaCard)));
-        p2.setHand(new java.util.ArrayList<>(List.of(nonBriscolaCard)));
+        p1.setHand(new ArrayList<>(List.of(briscolaCard)));
+        p2.setHand(new ArrayList<>(List.of(nonBriscolaCard)));
 
         Turn turn = new Turn(Phase.EVALUATE, "P1", "P1");
         turn.setBriscola(new BriscolaCard(Suit.HEART, Rank.SEVEN, 0, 7));
@@ -106,8 +106,8 @@ public class BriscolaRuleTest {
 
         Player p1 = new Player("P1");
         Player p2 = new Player("P2");
-        p1.setHand(new java.util.ArrayList<>(List.of(strongCard)));
-        p2.setHand(new java.util.ArrayList<>(List.of(weakCard)));
+        p1.setHand(new ArrayList<>(List.of(strongCard)));
+        p2.setHand(new ArrayList<>(List.of(weakCard)));
 
         Turn turn = new Turn(Phase.EVALUATE, "P1", "P1");
         turn.setBriscola(new BriscolaCard(Suit.HEART, Rank.SEVEN, 0, 7));
@@ -129,7 +129,7 @@ public class BriscolaRuleTest {
         BriscolaCard card2 = new BriscolaCard(Suit.SPADE, Rank.FOUR, 0, 4);
 
         Player p1 = new Player("P1");
-        p1.setHand(new java.util.ArrayList<>(List.of(card1)));
+        p1.setHand(new ArrayList<>(List.of(card1)));
 
         Turn turn = new Turn(Phase.EVALUATE, "P1", "P1");
         turn.setBriscola(new BriscolaCard(Suit.HEART, Rank.SEVEN, 0, 7));
@@ -199,7 +199,7 @@ public class BriscolaRuleTest {
 
     @Test
     public void testHandSuitBeatsForeignSuit() {
-        // P1 gioca SPADE (seme di mano), P2 gioca CLUB (seme estraneo), briscola e HEART
+        // P1 gioca SPADE (seme di mano), P2 gioca CLUB (seme estraneo), briscola è HEART
         BriscolaCard handSuitCard = new BriscolaCard(Suit.SPADE, Rank.FOUR, 0, 4);
         BriscolaCard foreignSuitCard = new BriscolaCard(Suit.CLUB, Rank.ACE, 11, 15);
 

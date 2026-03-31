@@ -57,7 +57,7 @@ public class BriscolaDeckTest {
         for (int i = 0; i < 40; i++) {
             BriscolaCard card = deck.draw();
             Rank r = card.getRank();
-            if (r == Rank.FOUR || r == Rank.FIVE || r == Rank.SIX || r == Rank.SEVEN) {
+            if (r == Rank.TWO || r == Rank.FOUR || r == Rank.FIVE || r == Rank.SIX || r == Rank.SEVEN) {
                 assertThat(card.getPoints()).isEqualTo(0);
             }
         }
